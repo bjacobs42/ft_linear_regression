@@ -26,12 +26,19 @@ def parseInput() -> int:
     return (value)
 
 
+def getTheta() -> list:
+    theta = ft_load("./theta.csv")
+    if theta is None:
+        return [0, 0]
+    return theta
+
+
 def main() -> int:
     mileage: int = parseInput()
-    # get theta1 and 0
-    # print theta0 + theta1 * mileage
+    theta: list = getTheta()
+    estimatedPrice: int = theta[0] + theta[1] * mileage
 
-    print(mileage)
+    print("Estimated price for mileage " + str(mileage) + ": " str(estimatedPrice))
     return (0)
 
 
