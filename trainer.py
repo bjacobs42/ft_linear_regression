@@ -12,7 +12,11 @@ def main() -> int:
     assert isinstance(file_path, str)
 
     df = load(file_path)
+    if (df is None):
+        return 0
     print(df)
+    # train using gradient descent
+    # save theta0 and theta1 to a file
 
     return (0)
 
