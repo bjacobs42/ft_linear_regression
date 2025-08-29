@@ -1,5 +1,10 @@
 from load_csv import load
+from estimate_price import estimatePrice
 import sys
+
+
+def linearRegression():
+    return ([theta0, theta1])
 
 
 def main() -> int:
@@ -15,7 +20,7 @@ def main() -> int:
     if (df is None):
         return 0
     print(df)
-    # train using gradient descent
+    theta: list = linearRegression()
     # save theta0 and theta1 to a file
 
     return (0)

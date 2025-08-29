@@ -1,4 +1,5 @@
 import sys
+from estimate_price import estimatePrice
 
 
 def tryIntParse(userInput: str) -> int:
@@ -35,10 +36,10 @@ def getTheta() -> list:
 
 def main() -> int:
     mileage: int = parseInput()
-    theta: list = getTheta()
-    estimatedPrice: int = theta[0] + theta[1] * mileage
+    theta: list[int] = getTheta()
+    estimatedPrice: int = estimatePrice(mileage, theta)
 
-    print("Estimated price for mileage " + str(mileage) + ": " str(estimatedPrice))
+    print(f"Estimated price for mileage {mileage}: {estimatedPrice}")
     return (0)
 
 
