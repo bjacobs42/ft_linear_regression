@@ -31,6 +31,7 @@ def getTheta() -> list:
     theta = ft_load("./theta.csv")
     if theta is None:
         return [0, 0]
+    # double check format here!! (Must be a [int, int])
     return theta
 
 
