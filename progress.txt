@@ -1,0 +1,7 @@
+Learning Calculus - 4.8/6 done
+
+Learn Multivariable Calculus 0/5 done
+
+Make training using math knownledge (probably using L'hopital's rule)
+
+make robust input (no errors on bad input)
