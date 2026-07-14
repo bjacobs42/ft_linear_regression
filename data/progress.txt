@@ -1,0 +1,5 @@
+Learning Calculus - 6/6 done
+
+Learn Multivariable Calculus 1/5 done, but I know enough now
+
+plan creating on main.py, now for execution

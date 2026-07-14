@@ -1,19 +1,37 @@
-import sys
-from estimate_price import estimatePrice
+import pandas as pd
+
+
+def load(path: str) -> pd.DataFrame | None:
+    """
+    Uses pandas to load a file specified by `path`.
+    Returns a pandas DataFrame or None on error.
+    """
+
+    try:
+        df = pd.read_csv(path, index_col=0)
+    except (FileNotFoundError, UnicodeDecodeError, pd.errors.ParserError) as e:
+        print(f"Error: {e}")
+        return None
+    except pd.errors.EmptyDataError:
+        print("Error: empty file")
+        return None
+
+    # print(f"loading dataset of dimensions {df.shape}")
+    return df
 
 
 def tryIntParse(userInput: str) -> int:
     try:
         return int(userInput)
     except ValueError:
-        return (-1)
+        return -1
 
 
 def parseInput() -> int:
     userInput: str
     value: int
 
-    if (len(sys.argv) > 1):
+    if len(sys.argv) > 1:
         userInput = sys.argv[1]
     else:
         userInput = input("Enter mileage: ")
@@ -24,7 +42,7 @@ def parseInput() -> int:
         userInput = input("Re-enter mileage: ")
         value = tryIntParse(userInput)
 
-    return (value)
+    return value
 
 
 def getTheta() -> list:
@@ -33,16 +51,3 @@ def getTheta() -> list:
         return [0, 0]
     # double check format here!! (Must be a [int, int])
     return theta
-
-
-def main() -> int:
-    mileage: int = parseInput()
-    theta: list[int] = getTheta()
-    estimatedPrice: int = estimatePrice(mileage, theta)
-
-    print(f"Estimated price for mileage {mileage}: {estimatedPrice}")
-    return (0)
-
-
-if __name__ == "__main__":
-    main()

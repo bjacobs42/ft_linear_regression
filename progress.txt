@@ -1,7 +1,0 @@
-Learning Calculus - 5.7/6 done
-
-Learn Multivariable Calculus 0/5 done
-
-Make trainer using math knownledge
-
-make robust input (no errors on bad input)?
