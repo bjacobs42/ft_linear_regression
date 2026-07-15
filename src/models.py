@@ -1,10 +1,11 @@
-from utils import load, saveData
+from .utils import load, saveData
+import math
 
 THETA_PATH = "../data/theta.csv"
 
 
 class LinearRegression:
-    def __init__(self, learning_rate=0.0001) -> None:
+    def __init__(self, learning_rate=0.000001) -> None:
         self.theta0, self.theta1 = self._loadTheta()
         self.learning_rate = learning_rate
 
@@ -19,6 +20,10 @@ class LinearRegression:
         if data is None:
             return
 
+        # format data (Remove duplicates, change from str to int, check format [num, num])
+        data.iloc[:, 0] = data.iloc[:, 0].astype(int)
+        data.iloc[:, 1] = data.iloc[:, 1].astype(int)
+
         prev_gradient1 = None
         prev_gradient0 = None
 
@@ -28,8 +33,11 @@ class LinearRegression:
             gradient0 = 0.0
             gradient1 = 0.0
 
-            for mileage, price in data.itertuples(index=False):
+            for mileage, price in data.itertuples(name=None, index=False):
                 residual = self.estimatePrice(mileage) - price
+                if math.isinf(residual):
+                    break
+                print(residual)
                 gradient0 += residual
                 gradient1 += residual * mileage
 
@@ -40,8 +48,8 @@ class LinearRegression:
                 ):
                     break
 
-            self.theta1 += self.learning_rate * (gradient1) / m
             self.theta0 += self.learning_rate * (gradient0) / m
+            self.theta1 += self.learning_rate * (gradient1) / m
 
             prev_gradient0 = gradient0
             prev_gradient1 = gradient1

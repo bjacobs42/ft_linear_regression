@@ -23,7 +23,7 @@ def load(path: str, silent=False) -> pd.DataFrame | None:
     """
 
     try:
-        df = pd.read_csv(path, index_col=0)
+        df = pd.read_csv(path)
     except (FileNotFoundError, UnicodeDecodeError, pd.errors.ParserError) as e:
         if not silent:
             print(f"Error: {e}")
@@ -37,26 +37,10 @@ def load(path: str, silent=False) -> pd.DataFrame | None:
     return df
 
 
-def tryIntParse(userInput: str) -> int:
+def tryIntParse(userInput: str, silent=False) -> int | None:
     try:
         return int(userInput)
-    except ValueError:
-        return -1
-
-
-def parseInput(argv: list) -> int:
-    userInput: str
-    value: int
-
-    if len(argv) > 1:
-        userInput = argv[1]
-    else:
-        userInput = input("Enter mileage: ")
-
-    value = tryIntParse(userInput)
-    while value < 0:
-        print("Invalid mileage, please try again")
-        userInput = input("Re-enter mileage: ")
-        value = tryIntParse(userInput)
-
-    return value
+    except ValueError as e:
+        if not silent:
+            print(f"ValueError: {e}")
+        return None
