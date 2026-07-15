@@ -1,7 +1,22 @@
 import pandas as pd
 
 
-def load(path: str) -> pd.DataFrame | None:
+def saveData(path: str, columns: list[str], data, silent=False) -> bool:
+    try:
+        df = pd.DataFrame(data, columns=columns)
+        df.to_csv(path, index=False)
+    except (ValueError, TypeError) as e:
+        if not silent:
+            print(f"saveData: Invalid data: {e}")
+        return False
+    except (FileNotFoundError, PermissionError, IsADirectoryError, OSError) as e:
+        if not silent:
+            print(f"saveData: Couldn't save file: {e}")
+        return False
+    return True
+
+
+def load(path: str, silent=False) -> pd.DataFrame | None:
     """
     Uses pandas to load a file specified by `path`.
     Returns a pandas DataFrame or None on error.
@@ -10,10 +25,12 @@ def load(path: str) -> pd.DataFrame | None:
     try:
         df = pd.read_csv(path, index_col=0)
     except (FileNotFoundError, UnicodeDecodeError, pd.errors.ParserError) as e:
-        print(f"Error: {e}")
+        if not silent:
+            print(f"Error: {e}")
         return None
     except pd.errors.EmptyDataError:
-        print("Error: empty file")
+        if not silent:
+            print("Error: empty file")
         return None
 
     # print(f"loading dataset of dimensions {df.shape}")
@@ -27,12 +44,12 @@ def tryIntParse(userInput: str) -> int:
         return -1
 
 
-def parseInput() -> int:
+def parseInput(argv: list) -> int:
     userInput: str
     value: int
 
-    if len(sys.argv) > 1:
-        userInput = sys.argv[1]
+    if len(argv) > 1:
+        userInput = argv[1]
     else:
         userInput = input("Enter mileage: ")
 
@@ -43,11 +60,3 @@ def parseInput() -> int:
         value = tryIntParse(userInput)
 
     return value
-
-
-def getTheta() -> list:
-    theta = ft_load("./theta.csv")
-    if theta is None:
-        return [0, 0]
-    # double check format here!! (Must be a [int, int])
-    return theta
