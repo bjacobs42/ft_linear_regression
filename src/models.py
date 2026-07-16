@@ -1,6 +1,7 @@
 from config import THETA_PATH
-from src.loading import ft_tqdm
+from .loading import ft_tqdm
 from .utils import load, saveJson
+import pandas as pd
 import json
 
 
@@ -32,11 +33,10 @@ class LinearRegression:
         return self.theta0 + self.theta1 * normalized_mileage
 
     def train(self, filePath: str, epoch=10000, learning_rate=0.01) -> None:
-        data = load(filePath)
+        data = self._loadData(filePath)
         if data is None:
             return
 
-        # format data (Remove duplicates, check format [num, num])
         data = self._normalize(data)
 
         threshold = 1e-6
@@ -101,3 +101,24 @@ class LinearRegression:
             gradient1 += residual * mileage
 
         return [gradient0 / m, gradient1 / m]
+
+    def _loadData(self, path: str):
+        df = load(path)
+        if df is None:
+            return None
+
+        x = df.columns[0]
+        y = df.columns[1]
+
+        before = len(df)
+        df[x] = pd.to_numeric(df[x], errors="coerce")
+        df[y] = pd.to_numeric(df[y], errors="coerce")
+        df = df.dropna()
+        after = len(df)
+
+        if after == 0:
+            print(f"No usable data in {path}")
+            return None
+        if before != after:
+            print(f"Dropped {before - after} amount of data due to NaN")
+        return df
