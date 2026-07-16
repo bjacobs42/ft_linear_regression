@@ -1,7 +1,20 @@
+import json
 import pandas as pd
 
+from typing import Any
 
-def saveData(path: str, columns: list[str], data, silent=False) -> bool:
+
+def saveJson(path: str, data: dict[str, Any]) -> bool:
+    try:
+        with open(path, "w") as f:
+            json.dump(data, f, indent=4)
+    except (PermissionError, IsADirectoryError, OSError) as e:
+        print(f"saveJson: Couldn't save file: {e}")
+        return False
+    return True
+
+
+def saveCSV(path: str, columns: list[str], data, silent=False) -> bool:
     try:
         df = pd.DataFrame(data, columns=columns)
         df.to_csv(path, index=False)
