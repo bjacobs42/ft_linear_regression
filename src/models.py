@@ -1,4 +1,5 @@
 from config import THETA_PATH
+from src.loading import ft_tqdm
 from .utils import load, saveJson
 import json
 
@@ -39,7 +40,8 @@ class LinearRegression:
         data = self._normalize(data)
 
         threshold = 1e-6
-        for _ in range(epoch):
+        print("Training started")
+        for _ in ft_tqdm(range(epoch)):
             gradient0, gradient1 = self._computeGradient(data)
 
             old_theta0 = self.theta0
@@ -47,16 +49,17 @@ class LinearRegression:
 
             self.theta0 -= learning_rate * gradient0
             self.theta1 -= learning_rate * gradient1
-            print(
-                f"gradients: {gradient0}, {gradient1}",
-                f"thetas: {self.theta0}, {self.theta1}",
-                f"epoch: {_}",
-            )
+            # print(
+            #    f"gradients: {gradient0}, {gradient1}",
+            #    f"thetas: {self.theta0}, {self.theta1}",
+            #    f"epoch: {_}",
+            # )
 
             if (
                 abs(old_theta0 - self.theta0) < threshold
                 and abs(old_theta1 - self.theta1) < threshold
             ):
+                print("Training finished early!")
                 break
 
         saveJson(
