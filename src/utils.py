@@ -50,13 +50,6 @@ def load(path: str, silent=False) -> pd.DataFrame | None:
     return df
 
 
-def tryInput(message: str, silent=False) -> str | None:
-    try:
-        return input(message)
-    except (EOFError, KeyboardInterrupt):
-        return None
-
-
 def tryIntParse(userInput: str, silent=False) -> int | None:
     try:
         return int(userInput)

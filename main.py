@@ -3,7 +3,7 @@ import sys
 from src.models import LinearRegression
 from os import path
 
-from src.utils import tryInput, tryIntParse
+from src.utils import tryIntParse
 
 
 def main() -> int:
@@ -12,9 +12,9 @@ def main() -> int:
     if len(sys.argv) > 1:
         user_input = sys.argv[1]
     else:
-        user_input = tryInput("Enter mileage or training material: ")
+        user_input = input("Enter mileage or training material: ")
 
-    while user_input is not None:
+    while True:
         if user_input.isdigit():
             num = tryIntParse(user_input)
             if num is not None:
@@ -25,11 +25,12 @@ def main() -> int:
             model.train(user_input)
         else:
             print("Unknown input, try again")
-        user_input = tryInput("Enter mileage or training material: ")
-    if user_input is None:
-        print()
+        user_input = input("Enter mileage or training material: ")
     return 0
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (EOFError, KeyboardInterrupt):
+        print()
