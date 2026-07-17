@@ -37,7 +37,13 @@ def load(path: str, silent=False) -> pd.DataFrame | None:
 
     try:
         df = pd.read_csv(path)
-    except (FileNotFoundError, UnicodeDecodeError, pd.errors.ParserError) as e:
+    except (
+        IsADirectoryError,
+        FileNotFoundError,
+        UnicodeDecodeError,
+        PermissionError,
+        pd.errors.ParserError,
+    ) as e:
         if not silent:
             print(f"Error: {e}")
         return None
