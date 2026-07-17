@@ -40,7 +40,7 @@ class LinearRegression:
         data = self._normalize(data)
 
         threshold = 1e-6
-        print("Training started")
+        print("Starting gradient descent...")
         for _ in ft_tqdm(range(epoch)):
             gradient0, gradient1 = self._computeGradient(data)
 
@@ -59,7 +59,7 @@ class LinearRegression:
                 abs(old_theta0 - self.theta0) < threshold
                 and abs(old_theta1 - self.theta1) < threshold
             ):
-                print("Training finished early!")
+                print("\nDescent finished early!")
                 break
 
         saveJson(
@@ -114,11 +114,12 @@ class LinearRegression:
         df[x] = pd.to_numeric(df[x], errors="coerce")
         df[y] = pd.to_numeric(df[y], errors="coerce")
         df = df.dropna()
+        df = df.drop_duplicates()
         after = len(df)
 
         if after == 0:
             print(f"No usable data in {path}")
             return None
         if before != after:
-            print(f"Dropped {before - after} amount of data due to NaN")
+            print(f"Dropped {before - after} amount of data due to NaN/duplicates")
         return df
