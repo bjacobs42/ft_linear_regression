@@ -36,8 +36,17 @@ class LinearRegression:
         self.min0 = get_number(data, "min0")
         self.max0 = get_number(data, "max0")
 
-    def graph(self) -> None:
-        pass
+    def reset(self) -> None:
+        self.theta0 = 0
+        self.theta1 = 0
+        self.min0 = None
+        self.max0 = None
+
+    def graph(self, filePath: str | PathLike) -> int:
+        data = self._loadData(filePath)
+        if data is None:
+            return 1
+        return 0
 
     def estimatePrice(self, mileage: int) -> float:
         if self.max0 is None or self.min0 is None:
@@ -46,10 +55,10 @@ class LinearRegression:
         normalized_mileage = (mileage - self.min0) / (self.max0 - self.min0)
         return self.theta0 + self.theta1 * normalized_mileage
 
-    def train(self, filePath: str | PathLike, epoch=10000, learning_rate=0.01) -> None:
+    def train(self, filePath: str | PathLike, epoch=10000, learning_rate=0.01) -> int:
         data = self._loadData(filePath)
         if data is None:
-            return
+            return 1
 
         data = self._normalize(data)
 
@@ -80,7 +89,7 @@ class LinearRegression:
 
             prev_err = err
 
-        saveJson(
+        return not saveJson(
             self.save_path,
             {
                 "theta0": self.theta0,

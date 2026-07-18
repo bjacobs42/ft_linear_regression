@@ -129,7 +129,7 @@ def test_cli_success(tmp_path):
 
     result = subprocess.run(
         [sys.executable, str(MAIN)],
-        input=f"{data}\n1500\n",
+        input=f"train {data}\nestimate 1500\n",
         capture_output=True,
         text=True,
     )
@@ -139,26 +139,53 @@ def test_cli_success(tmp_path):
     assert "estimatedprice: 0" not in result.stdout.lower()
 
 
-def test_cli_rejects_invalid_number(tmp_path):
-    result = subprocess.run(
-        [sys.executable, str(MAIN)], input="abs\n5\n", capture_output=True, text=True
-    )
-
-    assert result.returncode == 0
-    assert "unknown" in result.stdout.lower()
-    assert "estimatedprice" in result.stdout.lower()
-
-
-def test_cli_rejects_invalid_file(tmp_path):
+def test_cli_unknown_command(tmp_path):
     result = subprocess.run(
         [sys.executable, str(MAIN)],
-        input="./does_not_exist.csv",
+        input="trai n\n",
         capture_output=True,
         text=True,
     )
 
     assert result.returncode == 0
     assert "unknown" in result.stdout.lower()
+
+
+def test_cli_no_args(tmp_path):
+    result = subprocess.run(
+        [sys.executable, str(MAIN)],
+        input="train\n",
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0
+    assert "usage" in result.stdout.lower()
+
+
+def test_cli_rejects_invalid_number(tmp_path):
+    result = subprocess.run(
+        [sys.executable, str(MAIN)],
+        input="estimate abs5\n",
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0
+    assert "error" in result.stdout.lower()
+    assert "estimatedprice" not in result.stdout.lower()
+
+
+def test_cli_rejects_invalid_file(tmp_path):
+    result = subprocess.run(
+        [sys.executable, str(MAIN)],
+        input="train ./does_not_exist.csv",
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0
+    assert "error" in result.stdout.lower()
 
     result = None
     path = tmp_path / "no_permissions.csv"
@@ -174,7 +201,7 @@ def test_cli_rejects_invalid_file(tmp_path):
     with patch("builtins.open", side_effect=fake_open):
         result = subprocess.run(
             [sys.executable, str(MAIN)],
-            input=str(path),
+            input=f"graph {str(path)}",
             capture_output=True,
             text=True,
         )
