@@ -147,7 +147,7 @@ class LinearRegression:
             mse = self._computeError(data)
             if mse > prev_mse:
                 learning_rate *= 0.5
-                print(f"Reducing learning rate to {learning_rate}")
+                print(f"\nReducing learning rate to {learning_rate}")
 
                 self.theta0 = old_theta0
                 self.theta1 = old_theta1
