@@ -208,3 +208,18 @@ def test_cli_rejects_invalid_file(tmp_path):
 
     assert result.returncode == 0
     assert "error" in result.stdout.lower()
+
+
+def test_cli_empty_csv(tmp_path):
+    path: pathlib.Path = tmp_path / "data.csv"
+
+    path.touch
+    result = subprocess.run(
+        [sys.executable, str(MAIN)],
+        input=f"train {path}",
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0
+    assert "error" in result.stdout.lower()

@@ -151,6 +151,9 @@ class LinearRegression:
             return 1
 
         data = self._normalize(data)
+        if data is None:
+            return 1
+
         prev_mse = float("inf")
         threshold = 1e-9
         print("Starting gradient descent...")
@@ -204,7 +207,7 @@ class LinearRegression:
             data: a pandas DataFrame containing the dataset.
 
         Returns:
-            The normilized DataFrame.
+            The normilized DataFrame or None on failure.
         """
 
         col = data.columns[0]
@@ -215,7 +218,7 @@ class LinearRegression:
 
         range1 = self.max0 - self.min0
         if range1 == 0:
-            raise ValueError("feature1 values are all identical")
+            return None
 
         data[col] = (data[col] - self.min0) / range1
 
