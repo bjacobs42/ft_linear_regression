@@ -110,8 +110,8 @@ class LinearRegression:
         plt.plot(x, y_est, label="Regression", color="black", zorder=2)
         plt.vlines(x, y_est, y, label="MSE", color="red", zorder=1)
 
-        plt.xlabel("Kilometre")
-        plt.ylabel("Price")
+        plt.xlabel(str(km).replace("_", " ").capitalize())
+        plt.ylabel(str(price).replace("_", " ").capitalize())
 
         plt.legend()
         plt.show()
