@@ -281,6 +281,9 @@ class LinearRegression:
         df = load(path)
         if df is None:
             return None
+        if len(df.columns) != 2:
+            print("Error: unusable dataset")
+            return None
 
         x = df.columns[0]
         y = df.columns[1]

@@ -52,6 +52,18 @@ def test_load_data_with_duplicates(tmp_path):
     assert df.iloc[2]["x"] == 3
 
 
+def test_load_non_csv_file(tmp_path):
+    model = LinearRegression()
+    path: pathlib.Path = tmp_path / "data.json"
+
+    data = {"theta0": 0, "theta1": 0}
+    path.write_text(json.dumps(data))
+
+    df = model._loadData(path)
+
+    assert df is None
+
+
 def test_load_json_invalid(tmp_path):
     path = tmp_path / "model.json"
 
@@ -223,3 +235,24 @@ def test_cli_empty_csv(tmp_path):
 
     assert result.returncode == 0
     assert "error" in result.stdout.lower()
+
+
+def test_cli_non_csv_file(tmp_path):
+    path: pathlib.Path = tmp_path / "data.json"
+
+    data = {
+        "theta0": 70732.44463986748,
+        "theta1": 7669.4564133266595,
+        "min0": 22899,
+        "max0": 240000,
+    }
+    path.write_text(json.dumps(data))
+
+    result = subprocess.run(
+        [sys.executable, str(MAIN)],
+        input=f"train {path}",
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0

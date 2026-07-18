@@ -46,7 +46,7 @@ def saveCSV(path: str | PathLike, columns: list[str], data, silent=False) -> boo
 
 def load(path: str | PathLike, silent=False) -> pd.DataFrame | None:
     """
-    Uses pandas to load a file specified by `path`.
+    Uses pandas to load a csv file specified by `path`.
     Errors can be silenced by setting `silent` to True.
     Returns a pandas DataFrame or None on error.
     """
