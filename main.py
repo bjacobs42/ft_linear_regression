@@ -16,7 +16,6 @@ def process_input(user_input: str, model: LinearRegression):
         model.train(user_input)
     else:
         print("Unknown input, try again")
-    user_input = input("Enter mileage or training material: ")
 
 
 def main() -> int:
