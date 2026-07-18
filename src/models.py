@@ -1,5 +1,6 @@
 from os import PathLike
-import re
+
+from pandas.io.formats.format import math
 from config import THETA_PATH
 from .loading import ft_tqdm
 from .utils import load, saveJson
@@ -20,10 +21,20 @@ class LinearRegression:
         except json.JSONDecodeError as e:
             print(f"Error while loading model.json: {e}. Using thetas at 0")
 
-        self.theta0 = data.get("theta0") or 0.0
-        self.theta1 = data.get("theta1") or 0.0
-        self.min0 = data.get("min0")
-        self.max0 = data.get("max0")
+        def get_number(data, key: str, default=None) -> float | None:
+            value = data.get(key, default)
+
+            try:
+                if isinstance(value, (int, float)) and math.isfinite(value):
+                    return value
+            except Exception as e:
+                print(f"Error while loading model.json: {e}. Using {key} at 0")
+            return default
+
+        self.theta0 = get_number(data, "theta0") or 0.0
+        self.theta1 = get_number(data, "theta1") or 0.0
+        self.min0 = get_number(data, "min0")
+        self.max0 = get_number(data, "max0")
 
     def graph(self) -> None:
         pass
