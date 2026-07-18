@@ -10,8 +10,8 @@ USAGE = """Usage:
 
 Commands:
   train [csv_file]      Train the linear regression model.
-  graph [csv_file]      Plot the dataset and regression line.
-  predict [mileage]     Predict the price for a mileage.
+  graph [csv_file]      Graph the dataset and regression line.
+  estimate [number]     Estimates the price for a kilometre.
   reset                 Reset the trained model.
   help                  Show this help message.
 """

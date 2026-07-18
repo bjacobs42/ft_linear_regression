@@ -6,6 +6,12 @@ from typing import Any
 
 
 def saveJson(path: str | PathLike, data: dict[str, Any]) -> bool:
+    """
+    Uses json to save a json file specified by `path`.
+
+    Returns True on success and False on failure.
+    """
+
     try:
         with open(path, "w") as f:
             json.dump(data, f, indent=4)
@@ -15,7 +21,15 @@ def saveJson(path: str | PathLike, data: dict[str, Any]) -> bool:
     return True
 
 
-def saveCSV(path: str, columns: list[str], data, silent=False) -> bool:
+def saveCSV(path: str | PathLike, columns: list[str], data, silent=False) -> bool:
+    """
+    Uses pandas to save a csv file specified by `path`.
+    The csv file will contain the headers specified by `columns` and its rows specified by `data`.
+    Errors can be silenced by setting `silent` to True.
+
+    Returns True on success and False on failure.
+    """
+
     try:
         df = pd.DataFrame(data, columns=columns)
         df.to_csv(path, index=False)
@@ -33,6 +47,7 @@ def saveCSV(path: str, columns: list[str], data, silent=False) -> bool:
 def load(path: str | PathLike, silent=False) -> pd.DataFrame | None:
     """
     Uses pandas to load a file specified by `path`.
+    Errors can be silenced by setting `silent` to True.
     Returns a pandas DataFrame or None on error.
     """
 
@@ -58,6 +73,13 @@ def load(path: str | PathLike, silent=False) -> pd.DataFrame | None:
 
 
 def tryIntParse(userInput: str, silent=False) -> int | None:
+    """
+    Tries to cast a str to int with try except protection.
+    Errors can be silenced by setting `silent` to True.
+
+    Returns an int or None on failure.
+    """
+
     try:
         return int(userInput)
     except ValueError as e:

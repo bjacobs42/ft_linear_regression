@@ -135,8 +135,8 @@ def test_cli_success(tmp_path):
     )
 
     assert result.returncode == 0
-    assert "estimatedprice" in result.stdout.lower()
-    assert "estimatedprice: 0" not in result.stdout.lower()
+    assert "estimated price" in result.stdout.lower()
+    assert "estimated price: 0" not in result.stdout.lower()
 
 
 def test_cli_unknown_command(tmp_path):
@@ -173,7 +173,7 @@ def test_cli_rejects_invalid_number(tmp_path):
 
     assert result.returncode == 0
     assert "error" in result.stdout.lower()
-    assert "estimatedprice" not in result.stdout.lower()
+    assert "estimated price" not in result.stdout.lower()
 
 
 def test_cli_rejects_invalid_file(tmp_path):

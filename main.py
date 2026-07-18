@@ -7,6 +7,17 @@ from src.utils import tryIntParse
 
 
 def process_input(user_input: str, model: LinearRegression) -> int:
+    """
+    Processes a user command and executes the corresponding model action.
+
+    Args:
+        user_input: The command entered by the user.
+        model: The linear regression model used to execute commands.
+
+    Returns:
+        0 on success, or 1 if the command or arguments are invalid.
+    """
+
     args = user_input.split(" ")
 
     if len(args) == 0:
@@ -31,14 +42,14 @@ def process_input(user_input: str, model: LinearRegression) -> int:
             if num is None:
                 return 1
             estimatedPrice = model.estimatePrice(num)
-            print(f"Estimated price: {estimatedPrice}")
+            print(f"Estimated price: {int(estimatedPrice)}")
         case "reset":
             model.reset()
             print("theta has been reset to 0")
         case "help":
             print(USAGE)
         case _:
-            print(f'Unknown command "{args[0]}". Type "help" for a list of commands.')
+            print(f'Unknown command "{args[0]}". Enter "help" for a list of commands.')
 
     return 0
 
@@ -46,17 +57,21 @@ def process_input(user_input: str, model: LinearRegression) -> int:
 def main() -> int:
     model = LinearRegression()
 
-    if len(sys.argv) > 1:
-        return process_input(sys.argv[1], model)
-    else:
-        print('Type "help" for a list of commands.')
-        while True:
-            user_input = input(">>> ")
-            process_input(user_input, model)
+    try:
+        if len(sys.argv) > 1:
+            return process_input(" ".join(sys.argv[1:]), model)
+        else:
+            print('Type "help" for a list of commands.')
+            while True:
+                user_input = input("--> ")
+                process_input(user_input, model)
+    except EOFError:
+        print()
+        return 0
 
 
 if __name__ == "__main__":
     try:
         main()
-    except (EOFError, KeyboardInterrupt):
-        print()
+    except KeyboardInterrupt:
+        pass
