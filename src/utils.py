@@ -1,10 +1,11 @@
 import json
+from os import PathLike
 import pandas as pd
 
 from typing import Any
 
 
-def saveJson(path: str, data: dict[str, Any]) -> bool:
+def saveJson(path: str | PathLike, data: dict[str, Any]) -> bool:
     try:
         with open(path, "w") as f:
             json.dump(data, f, indent=4)
@@ -29,7 +30,7 @@ def saveCSV(path: str, columns: list[str], data, silent=False) -> bool:
     return True
 
 
-def load(path: str, silent=False) -> pd.DataFrame | None:
+def load(path: str | PathLike, silent=False) -> pd.DataFrame | None:
     """
     Uses pandas to load a file specified by `path`.
     Returns a pandas DataFrame or None on error.

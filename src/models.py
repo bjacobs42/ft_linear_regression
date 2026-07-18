@@ -1,3 +1,5 @@
+from os import PathLike
+import re
 from config import THETA_PATH
 from .loading import ft_tqdm
 from .utils import load, saveJson
@@ -6,11 +8,12 @@ import json
 
 
 class LinearRegression:
-    def __init__(self) -> None:
+    def __init__(self, model_data=THETA_PATH) -> None:
+        self.save_path = model_data
         data: dict[str, float] = {}
 
         try:
-            with open(THETA_PATH, "r") as f:
+            with open(self.save_path, "r") as f:
                 data = json.load(f)
         except FileNotFoundError:
             pass
@@ -32,14 +35,15 @@ class LinearRegression:
         normalized_mileage = (mileage - self.min0) / (self.max0 - self.min0)
         return self.theta0 + self.theta1 * normalized_mileage
 
-    def train(self, filePath: str, epoch=10000, learning_rate=0.01) -> None:
+    def train(self, filePath: str | PathLike, epoch=10000, learning_rate=0.01) -> None:
         data = self._loadData(filePath)
         if data is None:
             return
 
         data = self._normalize(data)
 
-        threshold = 1e-6
+        prev_err = float("inf")
+        threshold = 1e-9
         print("Starting gradient descent...")
         for _ in ft_tqdm(range(epoch)):
             gradient0, gradient1 = self._computeGradient(data)
@@ -49,21 +53,24 @@ class LinearRegression:
 
             self.theta0 -= learning_rate * gradient0
             self.theta1 -= learning_rate * gradient1
-            # print(
-            #    f"gradients: {gradient0}, {gradient1}",
-            #    f"thetas: {self.theta0}, {self.theta1}",
-            #    f"epoch: {_}",
-            # )
 
-            if (
-                abs(old_theta0 - self.theta0) < threshold
-                and abs(old_theta1 - self.theta1) < threshold
-            ):
+            err = self._computeError(data)
+            if err > prev_err:
+                learning_rate *= 0.5
+                print(f"Reducing learning rate to {learning_rate}")
+
+                self.theta0 = old_theta0
+                self.theta1 = old_theta1
+                continue
+
+            if abs(prev_err - err) < threshold:
                 print("\nDescent finished early!")
                 break
 
+            prev_err = err
+
         saveJson(
-            THETA_PATH,
+            self.save_path,
             {
                 "theta0": self.theta0,
                 "theta1": self.theta1,
@@ -90,6 +97,15 @@ class LinearRegression:
 
         return data
 
+    def _computeError(self, data) -> float:
+        m = len(data)
+
+        total_err = 0.0
+        for mileage, price in data.itertuples(name=None, index=False):
+            residual = self._hypothesis(mileage) - price
+            total_err += (residual**2) / (2 * m)
+        return total_err
+
     def _computeGradient(self, data) -> list[float]:
         m = len(data)
         gradient0 = 0.0
@@ -102,7 +118,7 @@ class LinearRegression:
 
         return [gradient0 / m, gradient1 / m]
 
-    def _loadData(self, path: str):
+    def _loadData(self, path: str | PathLike):
         df = load(path)
         if df is None:
             return None

@@ -9,20 +9,23 @@ from src.utils import tryIntParse
 def process_input(user_input: str, model: LinearRegression):
     if user_input.isdigit():
         num = tryIntParse(user_input)
-        if num is not None:
-            estimatedPrice = model.estimatePrice(num)
-            print(f"estimatedPrice: {estimatedPrice}")
+        if num is None:
+            return 1
+        estimatedPrice = model.estimatePrice(num)
+        print(f"estimatedPrice: {estimatedPrice}")
     elif path.exists(user_input):
         model.train(user_input)
     else:
         print("Unknown input, try again")
+        return 1
+    return 0
 
 
 def main() -> int:
     model = LinearRegression()
 
     if len(sys.argv) > 1:
-        process_input(sys.argv[1], model)
+        return process_input(sys.argv[1], model)
     else:
         while True:
             user_input = input("Enter mileage or training material: ")
