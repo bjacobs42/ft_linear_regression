@@ -55,15 +55,34 @@ class LinearRegression:
         self.min0 = get_number(data, "min0")
         self.max0 = get_number(data, "max0")
 
+    def save(self) -> bool:
+        """
+        Saves the model's current parameters.
+
+        Returns:
+            True on success or False on failure.
+        """
+
+        return saveJson(
+            self.save_path,
+            {
+                "theta0": self.theta0,
+                "theta1": self.theta1,
+                "min0": self.min0,
+                "max0": self.max0,
+            },
+        )
+
     def reset(self) -> None:
         """
-        Resets the model's data to its initial values. (0)
+        Resets the model's data to its initial values and deletes its saved model data. (0)
         """
 
         self.theta0 = 0
         self.theta1 = 0
         self.min0 = None
         self.max0 = None
+        self.save()
 
     def graph(self, file_path: str | PathLike) -> int:
         """
@@ -87,12 +106,12 @@ class LinearRegression:
         y = data[price]
         y_est = [self.estimatePrice(i) for i in x]
 
-        plt.scatter(x, y, label="data", zorder=3)
-        plt.plot(x, y_est, label="regression", color="black", zorder=2)
-        plt.vlines(x, y_est, y, label="error", color="red", zorder=1)
+        plt.scatter(x, y, label="Data", zorder=3)
+        plt.plot(x, y_est, label="Regression", color="black", zorder=2)
+        plt.vlines(x, y_est, y, label="MSE", color="red", zorder=1)
 
-        plt.xlabel("km")
-        plt.ylabel("price")
+        plt.xlabel("Kilometre")
+        plt.ylabel("Price")
 
         plt.legend()
         plt.show()
@@ -162,15 +181,7 @@ class LinearRegression:
 
             prev_mse = mse
 
-        return not saveJson(
-            self.save_path,
-            {
-                "theta0": self.theta0,
-                "theta1": self.theta1,
-                "min0": float(self.min0 or 0.0),
-                "max0": float(self.max0 or 0.0),
-            },
-        )
+        return not self.save()
 
     def _hypothesis(self, normalized_km: float) -> float:
         """
@@ -199,8 +210,8 @@ class LinearRegression:
         col = data.columns[0]
 
         if self.min0 is None or self.max0 is None:
-            self.min0 = data[col].min()
-            self.max0 = data[col].max()
+            self.min0 = int(data[col].min())
+            self.max0 = int(data[col].max())
 
         range1 = self.max0 - self.min0
         if range1 == 0:
